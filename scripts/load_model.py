@@ -7,9 +7,8 @@ from art.attacks.evasion import FastGradientMethod
 
 # Load the pretrained face emotion recognition model
 model_name = "microsoft/xclip-base-patch16"
-config = AutoConfig.from_pretrained(model_name)
-model = AutoModelForVideoClassification.from_config(config)
-extractor = AutoFeatureExtractor.from_config(config)
+model = AutoModelForVideoClassification.from_pretrained(model_name)
+extractor = AutoFeatureExtractor.from_pretrained(model_name)
 
 # Ensure model is in evaluation mode
 model.eval()
