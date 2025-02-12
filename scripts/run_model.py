@@ -90,14 +90,23 @@ predictions = predictions.cpu().numpy()  # Move to CPU and convert to numpy arra
 
 print(predictions)  # This will give you the predicted class indices
 
+print(video.shape[1:])
+
 # define classifier
+
+# prepare mean and std arrays for ART classifier preprocessing
+# TODO: investigate those values
+mean = np.array([0.485, 0.456, 0.406] * (32 * 224 * 224)).reshape((3, 32, 224, 224), order='F')
+std = np.array([0.229, 0.224, 0.225] * (32 * 224 * 224)).reshape((3, 32, 224, 224), order='F')
+
 loss_fn = torch.nn.CrossEntropyLoss()
 classifier = PyTorchClassifier(
     model=model,
     clip_values=(0, 1),
     loss=loss_fn,
     optimizer=torch.optim.Adam(model.parameters(), lr=0.001),
-    input_shape=inputs.shape[1:],
+    input_shape=video.shape[1:],
+    preprocessing=(mean, std),
     nb_classes=400
 )
 
