@@ -80,7 +80,15 @@ with torch.no_grad():
 # print(f"predicted_label: {predicted_label}")
 # print(model.config.id2label[predicted_label])
 
-print(outputs)
+logits = outputs[0]  # Extract the logits tensor from the tuple
+
+# Convert logits to predicted class indices by applying argmax
+predictions = torch.argmax(logits, dim=1)  # This gives you the index of the highest logit for each sample
+
+# Convert predictions to numpy if needed
+predictions = predictions.cpu().numpy()  # Move to CPU and convert to numpy array
+
+print(predictions)  # This will give you the predicted class indices
 
 # define classifier
 loss_fn = torch.nn.CrossEntropyLoss()
