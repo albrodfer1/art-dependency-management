@@ -9,6 +9,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "adversarial-robustness-toolbox @ git+https://github.com/Trusted-AI/adversarial-robustness-toolbox.git",
+    "transformers (>=4.48.3,<5.0.0)",
 ]
 
 
