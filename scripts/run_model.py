@@ -79,6 +79,10 @@ print(model.config.id2label[predicted_label])
 
 
 # --- Wrap Model with ART PyTorchClassifier ---
+# prepare mean and std arrays for ART classifier preprocessing
+mean = np.array([0.485, 0.456, 0.406] * (32 * 224 * 224)).reshape((3, 32, 224, 224), order='F')
+std = np.array([0.229, 0.224, 0.225] * (32 * 224 * 224)).reshape((3, 32, 224, 224), order='F')
+
 loss_fn = torch.nn.CrossEntropyLoss()
 classifier = PyTorchClassifier(
     model=model,
