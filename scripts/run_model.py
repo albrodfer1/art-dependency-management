@@ -36,7 +36,7 @@ image_processor = VivitImageProcessor.from_pretrained("google/vivit-b-16x2-kinet
 model = VivitForVideoClassification.from_pretrained("google/vivit-b-16x2-kinetics400")
 
 # Move the model to GPU (if available)
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda")
 model.to(device)
 
 # Process the inputs and move them to the same device
