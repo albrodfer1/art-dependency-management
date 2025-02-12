@@ -78,6 +78,7 @@ with torch.no_grad():
 
 # model predicts one of the 400 Kinetics-400 classes
 predicted_label = logits.argmax(-1).item()
+print(f"predicted_label: {predicted_label}")
 print(model.config.id2label[predicted_label])
 
 # define classifier
@@ -91,3 +92,7 @@ classifier = PyTorchClassifier(
     predict_function=predict_function,
     nb_classes=400
 )
+
+# verify that ART classifier predictions are consistent with original model:
+pred = classifier.predict(video)
+print(f"predicted_label: {pred}")
