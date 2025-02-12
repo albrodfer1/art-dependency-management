@@ -74,12 +74,13 @@ inputs = image_processor(list(video), return_tensors="pt")
 
 with torch.no_grad():
     outputs = model(**inputs)
-    logits = outputs.logits
 
 # model predicts one of the 400 Kinetics-400 classes
-predicted_label = logits.argmax(-1).item()
-print(f"predicted_label: {predicted_label}")
-print(model.config.id2label[predicted_label])
+# predicted_label = logits.argmax(-1).item()
+# print(f"predicted_label: {predicted_label}")
+# print(model.config.id2label[predicted_label])
+
+print(outputs)
 
 # define classifier
 loss_fn = torch.nn.CrossEntropyLoss()
