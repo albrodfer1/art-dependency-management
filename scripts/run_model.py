@@ -79,24 +79,24 @@ print(model.config.id2label[predicted_label])
 
 
 # --- Wrap Model with ART PyTorchClassifier ---
-
-# prepare mean and std arrays for ART classifier preprocessing
-# mean = np.array([0.485, 0.456, 0.406] * (32 * 224 * 224)).reshape((3, 32, 224, 224), order='F')
-# std = np.array([0.229, 0.224, 0.225] * (32 * 224 * 224)).reshape((3, 32, 224, 224), order='F')
-
 loss_fn = torch.nn.CrossEntropyLoss()
 classifier = PyTorchClassifier(
     model=model,
     clip_values=(0, 1),
     loss=loss_fn,
-    input_shape=(3, 32, 224, 224),
-    nb_classes=101,
-    # preprocessing=(mean, std),
-    channels_first=True,
+    optimizer=torch.optim.Adam(model.parameters(), lr=0.001),
+    input_shape=x.shape[1:],
+    nb_classes=400,
 )
 
 # --- Generate Adversarial Example ---
 attack = FastGradientMethod(estimator=classifier, eps=0.03)  # Epsilon controls perturbation strength
+# Fetch logits to pass to the attack
+logits = model(**inputs).logits
+
+# Convert logits to numpy and pass them to ART's predict method
+logits_numpy = logits.detach().cpu().numpy()
+
 x_adv = attack.generate(x=x.numpy())
 
 
