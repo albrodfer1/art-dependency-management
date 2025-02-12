@@ -88,7 +88,7 @@ classifier = PyTorchClassifier(
     clip_values=(0, 1),
     loss=loss_fn,
     optimizer=torch.optim.Adam(model.parameters(), lr=0.001),
-    input_shape=**input.shape[1:],
+    input_shape=input.shape[1:],
     nb_classes=400
 )
 
