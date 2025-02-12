@@ -84,9 +84,11 @@ classifier = PyTorchClassifier(
     model=model,
     clip_values=(0, 1),
     loss=loss_fn,
-    optimizer=torch.optim.Adam(model.parameters(), lr=0.001),
-    input_shape=x.shape[1:],
-    nb_classes=400,
+    input_shape=(3, 32, 224, 224),
+    nb_classes=101,
+    preprocessing=(mean, std),
+    clip_values=(0, 1),
+    channels_first=True,
 )
 
 # --- Generate Adversarial Example ---
