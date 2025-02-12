@@ -1,5 +1,5 @@
 import torch
-from transformers import AutoModelForVideoClassification, AutoFeatureExtractor
+from transformers import AutoModelForVideoClassification, AutoFeatureExtractor, AutoConfig
 import numpy as np
 import cv2
 from art.estimators.classification import PyTorchClassifier
@@ -7,8 +7,9 @@ from art.attacks.evasion import FastGradientMethod
 
 # Load the pretrained face emotion recognition model
 model_name = "ElenaRyumina/face_emotion_recognition"
-model = AutoModelForVideoClassification.from_pretrained(model_name)
-extractor = AutoFeatureExtractor.from_pretrained(model_name)
+config = AutoConfig.from_pretrained(model_name)
+model = AutoModelForVideoClassification.from_config(config)
+extractor = AutoFeatureExtractor.from_config(config)
 
 # Ensure model is in evaluation mode
 model.eval()
