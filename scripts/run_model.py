@@ -3,7 +3,7 @@ import numpy as np
 import torch
 
 from transformers import VivitImageProcessor, VivitForVideoClassification
-from huggingface_hub import hf_hub_download
+# from huggingface_hub import hf_hub_download
 
 np.random.seed(0)
 
@@ -48,9 +48,11 @@ def sample_frame_indices(clip_len, frame_sample_rate, seg_len):
 
 
 # video clip consists of 300 frames (10 seconds at 30 FPS)
-file_path = hf_hub_download(
-    repo_id="nielsr/video-demo", filename="eating_spaghetti.mp4", repo_type="dataset"
-)
+# file_path = hf_hub_download(
+#     repo_id="nielsr/video-demo", filename="eating_spaghetti.mp4", repo_type="dataset"
+# )
+
+file_path = "/content/drive/MyDrive/art-video-classification/in/video.mp4"
 container = av.open(file_path)
 
 # sample 32 frames
