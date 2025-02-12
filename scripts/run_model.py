@@ -1,19 +1,22 @@
 import av
 import numpy as np
 import torch
+import cv2
 
 from transformers import VivitImageProcessor, VivitForVideoClassification
+from art.estimators.classification import PyTorchClassifier
+from art.attacks.evasion import FastGradientMethod
 # from huggingface_hub import hf_hub_download
 
 np.random.seed(0)
-
 
 def read_video_pyav(container, indices):
     '''
     Decode the video with PyAV decoder.
     Args:
         container (`av.container.input.InputContainer`): PyAV container.
-        indices (`List[int]`): List of frame indices to decode.
+        indices (`List[int]`): Li# from huggingface_hub import hf_hub_download
+st of frame indices to decode.
     Returns:
         result (np.ndarray): np array of decoded frames of shape (num_frames, height, width, 3).
     '''
@@ -63,6 +66,7 @@ image_processor = VivitImageProcessor.from_pretrained("google/vivit-b-16x2-kinet
 model = VivitForVideoClassification.from_pretrained("google/vivit-b-16x2-kinetics400")
 
 inputs = image_processor(list(video), return_tensors="pt")
+x = inputs["pixel_values"]
 
 with torch.no_grad():
     outputs = model(**inputs)
@@ -71,3 +75,45 @@ with torch.no_grad():
 # model predicts one of the 400 Kinetics-400 classes
 predicted_label = logits.argmax(-1).item()
 print(model.config.id2label[predicted_label])
+
+
+
+# --- Wrap Model with ART PyTorchClassifier ---
+loss_fn = torch.nn.CrossEntropyLoss()
+classifier = PyTorchClassifier(
+    model=model,
+    clip_values=(0, 1),
+    loss=loss_fn,
+    optimizer=torch.optim.Adam(model.parameters(), lr=0.001),
+    input_shape=x.shape[1:],
+    nb_classes=400,
+)
+
+# --- Generate Adversarial Example ---
+attack = FastGradientMethod(estimator=classifier, eps=0.03)  # Epsilon controls perturbation strength
+x_adv = attack.generate(x=x.numpy())
+
+
+# --- Predict on Adversarial Example ---
+x_adv_tensor = torch.tensor(x_adv)
+with torch.no_grad():
+    adv_outputs = model(pixel_values=x_adv_tensor)
+    adv_logits = adv_outputs.logits
+
+adv_predicted_label = adv_logits.argmax(-1).item()
+print("Adversarial Prediction:", model.config.id2label[adv_predicted_label])
+
+# Convert adversarial tensor back to images
+x_adv_np = (x_adv * 255).astype(np.uint8)  # Rescale to 0-255
+adv_frames = [frame.transpose(1, 2, 0) for frame in x_adv_np[0]]  # Convert (C, H, W) -> (H, W, C)
+
+# --- Save as Video ---
+output_path = "/content/drive/MyDrive/art-video-classification/out/adv_video.mp4"
+fps = 30  # Adjust based on original video
+height, width, _ = adv_frames[0].shape
+
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # Codec for MP4
+video_writer = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
+
+for frame in adv_frames:
+    video_writer.write(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))  # Convert RGB to BGR for OpenCV
