@@ -88,10 +88,10 @@ classifier = PyTorchClassifier(
     clip_values=(0, 1),
     loss=loss_fn,
     optimizer=torch.optim.Adam(model.parameters(), lr=0.001),
-    input_shape=input.shape[1:],
+    input_shape=inputs.shape[1:],
     nb_classes=400
 )
 
 # verify that ART classifier predictions are consistent with original model:
-pred = classifier.predict(**input)
+pred = classifier.predict(**inputs)
 print(f"predicted_label: {pred}")
