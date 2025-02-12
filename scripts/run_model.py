@@ -59,8 +59,7 @@ classifier = PyTorchClassifier(
     loss=loss_fn,
     optimizer=torch.optim.Adam(model.parameters(), lr=0.001),
     input_shape=x.shape[1:],
-    nb_classes=400,
-    predict_function=custom_predict  # Pass the custom predict function
+    nb_classes=400
 )
 
 # --- Generate Adversarial Example ---
