@@ -89,7 +89,6 @@ classifier = PyTorchClassifier(
     loss=loss_fn,
     optimizer=torch.optim.Adam(model.parameters(), lr=0.001),
     input_shape=video.shape[1:],
-    predict_function=predict_function,
     nb_classes=400
 )
 
