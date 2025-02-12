@@ -66,7 +66,7 @@ classifier = PyTorchClassifier(
 attack = FastGradientMethod(estimator=classifier, eps=0.03)  # Epsilon controls perturbation strength
 
 # Generate adversarial example
-x_adv = attack.generate(x=x.cpu().numpy())  # Pass the CPU tensor to ART
+x_adv = attack.generate(x=x.logits)  # Pass the CPU tensor to ART
 
 # Convert adversarial tensor back to images
 x_adv_np = (x_adv * 255).astype(np.uint8)  # Rescale to 0-255
