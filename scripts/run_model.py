@@ -43,6 +43,14 @@ model.to(device)
 inputs = image_processor(list(video_frames), return_tensors="pt")
 x = inputs["pixel_values"].to(device)  # Move to the same device as the model
 
+# --- Define Custom `predict` Method ---
+def custom_predict(x):
+    # Perform the model forward pass to get logits
+    with torch.no_grad():
+        outputs = model(input_ids=x)
+        logits = outputs.logits
+    return logits.cpu().numpy()  # Return logits as NumPy array
+
 # --- Wrap Model with ART PyTorchClassifier ---
 loss_fn = torch.nn.CrossEntropyLoss()
 classifier = PyTorchClassifier(
@@ -52,6 +60,7 @@ classifier = PyTorchClassifier(
     optimizer=torch.optim.Adam(model.parameters(), lr=0.001),
     input_shape=x.shape[1:],
     nb_classes=400,
+    predict_function=custom_predict  # Pass the custom predict function
 )
 
 # --- Generate Adversarial Example ---
@@ -77,3 +86,15 @@ for frame in adv_frames:
 
 video_writer.release()
 print(f"Adversarial video saved at: {output_path}")
+
+# --- Classify Adversarial Video ---
+inputs_adv = image_processor(list(adv_frames), return_tensors="pt").to(device)
+with torch.no_grad():
+    outputs_adv = model(**inputs_adv)
+    logits_adv = outputs_adv.logits
+
+# Get the predicted class for the adversarial video
+predicted_label_adv = logits_adv.argmax(-1).item()
+
+# Print the predicted label for the adversarial video
+print(f"Predicted label for the adversarial video: {model.config.id2label[predicted_label_adv]}")
