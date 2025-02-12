@@ -90,7 +90,7 @@ predictions = predictions.cpu().numpy()  # Move to CPU and convert to numpy arra
 
 print(predictions)  # This will give you the predicted class indices
 
-print(video.shape[1:])
+print(video.shape])
 
 # define classifier
 
@@ -105,7 +105,7 @@ classifier = PyTorchClassifier(
     clip_values=(0, 1),
     loss=loss_fn,
     optimizer=torch.optim.Adam(model.parameters(), lr=0.001),
-    input_shape=video.shape[1:],
+    input_shape=video.shape[1
     preprocessing=(mean, std),
     nb_classes=400
 )
