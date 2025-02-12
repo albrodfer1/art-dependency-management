@@ -9,9 +9,6 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "adversarial-robustness-toolbox @ git+https://github.com/Trusted-AI/adversarial-robustness-toolbox.git",
-    "decord (>=0.6.0,<0.7.0)",
-    "gluoncv (>=0.10.5.post0,<0.11.0)",
-    "mxnet (>=1.9.1,<2.0.0)"
 ]
 
 
