@@ -6,7 +6,7 @@ from art.estimators.classification import PyTorchClassifier
 from art.attacks.evasion import FastGradientMethod
 
 # Load the pretrained face emotion recognition model
-model_name = "ElenaRyumina/face_emotion_recognition"
+model_name = "microsoft/xclip-base-patch16"
 config = AutoConfig.from_pretrained(model_name)
 model = AutoModelForVideoClassification.from_config(config)
 extractor = AutoFeatureExtractor.from_config(config)
