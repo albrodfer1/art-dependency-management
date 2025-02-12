@@ -67,8 +67,8 @@ container = av.open(file_path)
 indices = sample_frame_indices(clip_len=32, frame_sample_rate=4, seg_len=container.streams.video[0].frames)
 video = read_video_pyav(container=container, indices=indices)
 
-image_processor = VivitImageProcessor.from_pretrained("google/vivit-b-16x2-kinetics400")
-model = VivitForVideoClassification.from_pretrained("google/vivit-b-16x2-kinetics400")
+image_processor = VivitImageProcessor.from_pretrained("google/vivit-b-16x2-kinetics400", torchscript= True)
+model = VivitForVideoClassification.from_pretrained("google/vivit-b-16x2-kinetics400", torchscript= True)
 
 inputs = image_processor(list(video), return_tensors="pt")
 
